@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:student_provider/functions/crud_operations.dart';
+import 'package:student_provider/povider/helperclass.dart';
 import 'package:student_provider/screens/validations.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -153,9 +155,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   CustomTextField(
                     controller: _contactController,
                     label: "Contact Number",
-                    icon: Icons.phone_outlined,
+                    maxlength: 10,
+                    icon: Icons.phone_outlined, 
                     validator: Validations.phoneValidator,
                     keyboardType: TextInputType.phone,
+                    
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
@@ -226,6 +230,42 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
+
+
+  void handleRegistration() async {
+  if (_formKey.currentState!.validate() &&
+      _nameController.text.isNotEmpty &&
+      _contactController.text.isNotEmpty &&
+      _emailController.text.isNotEmpty &&
+      _addressController.text.isNotEmpty &&
+      selectedImage?.path.isNotEmpty == true) {
+    
+    await registerStudent(
+      context, 
+      _nameController.text.trim(), 
+      _emailController.text.trim(), 
+      selectedImage!.path.toString(), 
+      int.parse(_contactController.text), 
+      _addressController.text.trim(), 
+      _formKey
+    );
+
+    // After successful registration
+    if (mounted && context.mounted) {
+      // Refresh the provider
+      await Provider.of<StudentProvider>(context, listen: false).getStudents();
+      
+      // Pop back to previous screen
+      Navigator.pop(context);
+    }
+  } else {
+    _nameController.clear();
+    _contactController.clear();
+    _addressController.clear();
+    _emailController.clear();
+    showSnackBar(context, 'Registration Failed!', Colors.red);
+  }
+}
 }
 
 class CustomTextField extends StatelessWidget {
@@ -236,6 +276,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLines;
 
+  final int? maxlength;
+
   const CustomTextField({
     super.key,
     required this.controller,
@@ -243,12 +285,13 @@ class CustomTextField extends StatelessWidget {
     required this.icon,
     this.validator,
     this.keyboardType,
-    this.maxLines = 1,
+    this.maxLines = 1,  this.maxlength,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxlength,
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
@@ -279,4 +322,6 @@ class CustomTextField extends StatelessWidget {
       ),
     );
   }
+
+  
 }
