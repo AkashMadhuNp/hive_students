@@ -35,6 +35,7 @@ Future<void> registerStudent(
         addStudent(add);
         showSnackBar(context,"REGISTERED SUCCESSFULLY" , Colors.green);
         Navigator.pop(context);
+        
     }
     }
 

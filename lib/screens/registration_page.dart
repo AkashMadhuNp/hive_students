@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_provider/functions/crud_operations.dart';
 import 'package:student_provider/povider/helperclass.dart';
+import 'package:student_provider/screens/home/home_screen.dart';
 import 'package:student_provider/screens/validations.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -179,34 +180,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(
-                    onPressed: () {
-
-
-                        if (_formKey.currentState!.validate() &&
-                                _nameController.text.isNotEmpty &&
-                                _contactController.text.isNotEmpty &&
-                                _emailController.text.isNotEmpty &&
-                                _addressController.text.isNotEmpty != null &&
-                                selectedImage!.path.isNotEmpty) {
-                              registerStudent(context, 
-                              _nameController.text.trim(), 
-                              _emailController.text.trim(), 
-                              selectedImage!.path.toString(), 
-                              int.parse(_contactController.text), 
-                              _addressController.text.trim(), 
-                              _formKey);
-                            } else {
-                              _nameController.clear();
-                              _contactController.clear();
-                              _addressController.clear();
-                              _emailController.clear();
-                              showSnackBar(
-                                  context, 'Register Faild!', Colors.red);
-                            }
-                          
-
-                      
-                    },
+                    onPressed: handleRegistration,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black26,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -230,7 +204,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
-
 
   void handleRegistration() async {
   if (_formKey.currentState!.validate() &&
@@ -256,7 +229,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
       await Provider.of<StudentProvider>(context, listen: false).getStudents();
       
       // Pop back to previous screen
-      Navigator.pop(context);
+      Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => const HomeScreen()),
+);
     }
   } else {
     _nameController.clear();
@@ -266,7 +242,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
     showSnackBar(context, 'Registration Failed!', Colors.red);
   }
 }
+
 }
+
+
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -322,6 +301,4 @@ class CustomTextField extends StatelessWidget {
       ),
     );
   }
-
-  
 }

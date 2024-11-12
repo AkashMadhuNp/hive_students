@@ -55,7 +55,8 @@ class StudentProvider extends ChangeNotifier {
       id: -1
     );
 
-    await addStudent(add);  // Make sure to await this
+    await addStudent(add);  
+    notifyListeners();
     if (context.mounted) {
       // Update the provider after registration
       await context.read<StudentProvider>().getStudents();

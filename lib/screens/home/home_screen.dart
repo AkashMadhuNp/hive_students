@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<StudentProvider>().getStudents();
     });
-    refreshStudentList();
   }
 
 void _onSearchChanged(String query){
@@ -309,5 +308,3 @@ Future<void> refreshStudentList() async {
 
     
   }
-
-  
